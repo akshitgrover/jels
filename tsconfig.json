@@ -1,0 +1,12 @@
+{
+    "compilerOptions": {
+        "module": "CommonJs",
+        "moduleResolution": "Node",
+        "target": "ES5",
+        "outDir": "build",
+        "strictNullChecks": true
+    },
+    "include": [
+        "lib/**/*"
+    ]
+}
