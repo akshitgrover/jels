@@ -14,3 +14,12 @@ interface node extends leaf {
     childPointers: Array<node | null>[];
     isLeaf: boolean;
 }
+
+/*
+    Blueprint of B+ Trees
+*/
+class tree {
+    protected root: node;
+    
+    constructor (readonly bfactor: number) {};
+}
