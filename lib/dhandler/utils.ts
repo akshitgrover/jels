@@ -84,6 +84,10 @@ export let getRightSplit = <V>(
   return obj;
 }
 
+let getSplitConcat = (key: string | number, keys: Array<string | number>, n: number) => {
+  return keys.slice(0, n).concat([key], keys.slice(n, ));
+}
+
 export function rInsert<V>(
   this: insertPayload<V>, n: node<V>
 ): splitPayload<V> | null {
@@ -93,36 +97,31 @@ export function rInsert<V>(
     n.childPointers[temp] = getNode(
       this.key, true, this.value,
     );
-    return null;
-  }
-  if (!child.isLeaf) {
+  } else if (!child.isLeaf) {
     let res = rInsert.call(this, child);
     if (res == null) {
       return null;
     }
     let { key, left, right } = res;
     let n = getKey(key, child.keys);
-    child.keys = child.keys.slice(0, n).concat([this.key], child.keys.slice(n, ));
+    child.keys = getSplitConcat(this.key, child.keys, n);
     if (child.keys.length < this.maxLength) {
       child.childPointers[n] = left;
       child.childPointers[n + 1] = right;
-      return null;
+    } else {
+      let leftNode = getLeftSplit<V>(child.keys, {}, false);
+      let rightNode = getRightSplit<V>(child.keys, {}, false);
+      let splitKey = rightNode.keys[0];
+      rightNode.keys = rightNode.keys.slice(1, );
+      return getSplitPayload(leftNode, rightNode, splitKey);
     }
-    let leftNode = getLeftSplit<V>(child.keys, {}, false);
-    let rightNode = getRightSplit<V>(child.keys, {}, false);
-    let splitKey = rightNode.keys[0];
-    rightNode.keys = rightNode.keys.slice(1, );
-    return getSplitPayload(leftNode, rightNode, splitKey);
-  }
-  if (child.isLeaf && child.keys.length < this.maxLength) {
+  } else if (child.isLeaf && child.keys.length < this.maxLength) {
     let n = getKey(this.key, child.keys);
-    child.keys = child.keys.slice(0, n).concat([this.key], child.keys.slice(n, ));
+    child.keys = getSplitConcat(this.key, child.keys, n);
     child.value[this.key] = this.value;
-    return null;
-  }
-  if (child.isLeaf && child.keys.length >= this.maxLength) {
+  } else if (child.isLeaf && child.keys.length >= this.maxLength) {
     let n = getKey(this.key, child.keys);
-    child.keys = child.keys.slice(0, n).concat([this.key], child.keys.slice(n, ));
+    child.keys = getSplitConcat(this.key, child.keys, n);
     child.value[this.key] = this.value;
     let leftNode = getLeftSplit(child.keys, child.value);
     let rightNode = getRightSplit(child.keys, child.value);
