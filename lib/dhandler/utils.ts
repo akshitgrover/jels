@@ -45,3 +45,28 @@ let valueFilter = <V>(keys: (string | number)[], values: indexMap<V>): indexMap<
 let getSplitpayload = <V>(left: node<V>, right: node<V>, key: string | number) => {
   return { left, right, key };
 }
+
+let getLeftSplit = <V>(keys: Array<string | number>, values: indexMap<V>): node<V> => {
+  let splitIndex = Math.floor(keys.length / 2);
+  let leftKeys = keys.slice(0, splitIndex);
+  let leftVals = valueFilter<V>(leftKeys, values);
+  return {
+    keys: leftKeys,
+    value: leftVals,
+    isLeaf: true,
+    childPointers: [],
+  }
+
+}
+
+let getRightSplit = <V>(keys: Array<string | number>, values: indexMap<V>): node<V> => {
+  let splitIndex = Math.floor(keys.length / 2);
+  let rightKeys = keys.slice(splitIndex, );
+  let rightVals = valueFilter<V>(rightKeys, values);
+  return {
+    keys: rightKeys,
+    value: rightVals,
+    isLeaf: true,
+    childPointers: [],
+  }
+}
