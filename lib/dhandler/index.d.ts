@@ -16,6 +16,15 @@ interface node<K, V> extends leaf<K, V> {
 }
 
 /*
+  Structure of object used to insert value in the tree by rInsert util method.
+*/
+interface insertPayload<K, V> {
+  key: K,
+  value: V,
+  readonly maxLength: number
+}
+
+/*
     Blueprint of B+ Trees
 */
 declare class tree <K, V> {
