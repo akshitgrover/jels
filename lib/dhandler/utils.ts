@@ -1,18 +1,16 @@
-///<reference path="./index.d.ts"/>
-
-export function putChildPointers<K, V>(n: node<K, V>, factor: number) {
+export function putChildPointers<V>(n: node<V>, factor: number) {
   for (let i = 0; i < factor + 1; i++) {
     n.childPointers.push(null);
   }
 }
 
-export function getNode<K, V>(
-    parent: node<K, V>,
-    key: K,
+export function getNode<V>(
+    parent: node<V>,
+    key: string | number,
     leaf: boolean = false,
     value: V | null = null,
-  ): node<K, V> {
-  let obj: node<K, V> = {
+  ): node<V> {
+  let obj: node<V> = {
     parent,
     keys: [key],
     isLeaf: leaf,
@@ -22,7 +20,7 @@ export function getNode<K, V>(
   return obj;
 }
 
-export function getKey<K>(key: K, keys: K[]): number {
+export function getKey(key: string | number, keys: (string | number)[]): number {
   let temp: number = 0;
   for (let i = 0; i < keys.length; i++) {
     temp = i;
