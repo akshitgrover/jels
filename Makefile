@@ -1,5 +1,5 @@
 build: lib/**/*
-	tsc
+	bin/build.sh
 
 clean:
 	rm -rf build
