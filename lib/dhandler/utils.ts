@@ -5,13 +5,11 @@ export function putChildPointers<V>(n: node<V>, factor: number) {
 }
 
 export function getNode<V>(
-    parent: node<V>,
     key: string | number,
     leaf: boolean = false,
     value: V | null = null,
   ): node<V> {
   let obj: node<V> = {
-    parent,
     keys: [key],
     isLeaf: leaf,
     childPointers: [],
@@ -33,4 +31,17 @@ export function getKey(key: string | number, keys: (string | number)[]): number 
     temp += 1;
   }
   return temp;
+}
+
+let valueFilter = <V>(keys: (string | number)[], values: indexMap<V>): indexMap<V> => {
+  let ac: indexMap<V> = {};
+  keys.reduce((acc, k) => {
+    acc[k] = values[k];
+    return acc;
+  }, ac)
+  return ac;
+}
+
+let getSplitpayload = <V>(left: node<V>, right: node<V>, key: string | number) => {
+  return { left, right, key };
 }
