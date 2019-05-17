@@ -15,8 +15,9 @@ export function getNode<V>(
     keys: [key],
     isLeaf: leaf,
     childPointers: [],
-    value: value,
+    value: {},
   }
+  obj.value[key] = value;
   return obj;
 }
 

@@ -1,6 +1,10 @@
+interface indexMap<V> {
+  [index: string]: V | null;
+}
+
 // Layout for required fields in the leaf node of B+ Tree.
 interface leaf<V> {
-  value: V | null;
+  value: indexMap<V>;
   parent: node<V> | null;
   keys: (string | number)[];
 }
