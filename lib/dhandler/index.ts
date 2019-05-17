@@ -1,38 +1,54 @@
+///<reference path="./index.d.ts"/>
+
 import * as util from "./utils";
-
-// Layout for required fields in the leaf node of B+ Tree.
-interface leaf<K, V> {
-  value: V | null;
-  parent: node<V, K> | null;
-  keys: K[];
-}
-
-/*
-    Structure for internal nodes of B+ trees.
-    Extends `leaf` to avoid complications for child pointers type.
-    Child pointer, Can point to both leaf and other internal nodes.
-*/
-interface node<K, V> extends leaf<K, V> {
-  childPointers: Array<node<K, V> | null>[];
-  isLeaf: boolean;
-}
 
 /*
     Blueprint of B+ Trees
 */
 class tree <K, V> {
-  protected root: node<K, V>;
+  protected root: node<V>;
 
   constructor (readonly bfactor: number = 4) {
     this.root = {
       isLeaf: false,
       childPointers: [],
-      value: null,
-      parent: null,
+      value: {},
       keys: [],
     }
-    util.putChildPointers.call(this, bfactor);
+    util.putChildPointers(this.root, bfactor);
   };
 
-  insert = util.insert;
+  insert(key: string | number, value: V): void {
+    if (this.root.keys.length == 0) {
+      this.root.keys.push(key);
+      this.root.childPointers[1] = util.getNode<V>(
+        key, true, value,
+      );
+      return;
+    }
+    let res = util.rInsert.call({ key, value, maxLength: this.bfactor }, this.root);
+    if (res == null) {
+      return;
+    }
+    let n = util.getKey(res.key, this.root.keys);
+    this.root.keys = this.root.keys.slice(0, n)
+    .concat([res.key], this.root.keys.slice(n, ));
+    if (this.root.keys.length < this.bfactor) {
+      this.root.childPointers[n] = res.left;
+      this.root.childPointers[n + 1] = res.right;
+      return;
+    }
+    let leftNode = util.getLeftSplit<V>(this.root.keys, {}, false);
+    let rightNode = util.getRightSplit<V>(this.root.keys, {}, false);
+    leftNode.value = {};
+    rightNode.value = {};
+    let splitKey = rightNode.keys[0];
+    rightNode.keys = rightNode.keys.slice(1, );
+    this.root = {
+      keys: [splitKey],
+      value: {},
+      childPointers: [leftNode, rightNode],
+      isLeaf: false,
+    }
+  };
 }
