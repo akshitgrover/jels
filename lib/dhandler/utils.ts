@@ -1,8 +1,8 @@
 ///<reference path="./index.d.ts"/>
 
-export function putChildPointers(factor: number) {
+export function putChildPointers<K, V>(n: node<K, V>, factor: number) {
   for (let i = 0; i < factor + 1; i++) {
-    this.root.childPointers.push(null);
+    n.childPointers.push(null);
   }
 }
 
