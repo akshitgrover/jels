@@ -21,5 +21,13 @@ interface node<V, K> extends leaf<V, K> {
 class tree <V, K> {
     protected root: node<V, K>;
     
-    constructor (readonly bfactor: number) {};
+    constructor (readonly bfactor: number = 4) {
+        this.root = {
+            isLeaf: false,
+            childPointers: [],
+            value: null,
+            parent: null,
+            keys: [],
+        }
+    };
 }
