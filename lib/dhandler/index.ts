@@ -1,8 +1,8 @@
 // Layout for required fields in the leaf node of B+ Tree.
-interface leaf {
-    fileOffset: number | null;
-    parent: node | null;
-    keys: number[];
+interface leaf<V, K> {
+    value: V | null;
+    parent: node<V, K> | null;
+    keys: K[];
 }
 
 /* 
@@ -10,16 +10,16 @@ interface leaf {
     Extends `leaf` to avoid complications for child pointers type.
     Child pointer, Can point to both leaf and other internal nodes.
 */
-interface node extends leaf {
-    childPointers: Array<node | null>[];
+interface node<V, K> extends leaf<V, K> {
+    childPointers: Array<node<V, K> | null>[];
     isLeaf: boolean;
 }
 
 /*
     Blueprint of B+ Trees
 */
-class tree {
-    protected root: node;
+class tree <V, K> {
+    protected root: node<V, K>;
     
     constructor (readonly bfactor: number) {};
 }
