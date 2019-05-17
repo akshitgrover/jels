@@ -5,7 +5,6 @@ interface indexMap<V> {
 // Layout for required fields in the leaf node of B+ Tree.
 interface leaf<V> {
   value: indexMap<V>;
-  parent: node<V> | null;
   keys: (string | number)[];
 }
 
@@ -26,6 +25,15 @@ interface insertPayload<V> {
   key: string | number,
   value: V,
   readonly maxLength: number
+}
+
+/*
+  Structure of payload which is returned between recursive of rInsert.
+*/
+interface splitPayload<V> {
+  key: string | number;
+  left: node<V>;
+  right: node <V>;
 }
 
 /*
