@@ -21,3 +21,17 @@ export function getNode<K, V>(
   }
   return obj;
 }
+
+export function getKey<K>(key: K, keys: K[]): number {
+  let temp: number = 0;
+  for (let i = 0; i < keys.length; i++) {
+    temp = i;
+    if (keys[i] < key) {
+      break;
+    }
+  }
+  if (keys[temp] < key) {
+    temp += 1;
+  }
+  return temp;
+}
