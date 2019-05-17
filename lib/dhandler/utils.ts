@@ -36,37 +36,50 @@ export function getKey(key: string | number, keys: (string | number)[]): number 
 let valueFilter = <V>(keys: (string | number)[], values: indexMap<V>): indexMap<V> => {
   let ac: indexMap<V> = {};
   keys.reduce((acc, k) => {
-    acc[k] = values[k];
+    acc[k] = values[k] || null;
     return acc;
   }, ac)
   return ac;
 }
 
-let getSplitpayload = <V>(left: node<V>, right: node<V>, key: string | number) => {
+export let getSplitPayload = <V>(left: node<V>, right: node<V>, key: string | number) => {
   return { left, right, key };
 }
 
-let getLeftSplit = <V>(keys: Array<string | number>, values: indexMap<V>): node<V> => {
+export let getLeftSplit = <V>(
+    keys: Array<string | number>, values: indexMap<V>, leaf: boolean = true,
+  ): node<V> => {
   let splitIndex = Math.floor(keys.length / 2);
   let leftKeys = keys.slice(0, splitIndex);
   let leftVals = valueFilter<V>(leftKeys, values);
-  return {
+  let obj = {
     keys: leftKeys,
     value: leftVals,
     isLeaf: true,
     childPointers: [],
   }
-
+  if (!leaf) {
+    obj.isLeaf = false,
+    obj.value = {};
+  }
+  return obj;
 }
 
-let getRightSplit = <V>(keys: Array<string | number>, values: indexMap<V>): node<V> => {
+export let getRightSplit = <V>(
+    keys: Array<string | number>, values: indexMap<V>, leaf: boolean = true,
+  ): node<V> => {
   let splitIndex = Math.floor(keys.length / 2);
   let rightKeys = keys.slice(splitIndex, );
   let rightVals = valueFilter<V>(rightKeys, values);
-  return {
+  let obj = {
     keys: rightKeys,
     value: rightVals,
     isLeaf: true,
     childPointers: [],
   }
+  if (!leaf) {
+    obj.isLeaf = false,
+    obj.value = {};
+  }
+  return obj;
 }
