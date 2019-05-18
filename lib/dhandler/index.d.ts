@@ -4,7 +4,7 @@ interface indexMap<V> {
 
 // Layout for required fields in the leaf node of B+ Tree.
 interface leaf<V> {
-  value: indexMap<V>;
+  value?: indexMap<V>;
   keys: (string | number)[];
 }
 
@@ -14,7 +14,7 @@ interface leaf<V> {
     Child pointer, Can point to both leaf and other internal nodes.
 */
 interface node<V> extends leaf<V> {
-  childPointers: Array<node<V> | null>;
+  childPointers?: Array<node<V> | null>;
   isLeaf: boolean;
 }
 
