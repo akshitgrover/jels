@@ -51,42 +51,21 @@ export let getSplitPayload = <V>(left: node<V>, right: node<V>, key: string | nu
   return { left, right, key };
 }
 
-export let getLeftSplit = <V>(
-    keys: Array<string | number>, values: indexMap<V>, leaf: boolean = true,
+export let getSplit = <V>(
+    keys: Array<string | number>, values: indexMap<V>, d: "L" | "R", leaf: boolean = true,
   ): node<V> => {
   let splitIndex = Math.floor(keys.length / 2);
-  let leftKeys = keys.slice(0, splitIndex);
-  let leftVals = valueFilter<V>(leftKeys, values);
+  let splitKeys = (d == "L")? keys.slice(0, splitIndex): keys.slice(splitIndex, );
+  let splitVals = valueFilter<V>(splitKeys, values);
   let obj = {
-    keys: leftKeys,
-    value: leftVals,
+    keys: splitKeys,
+    value: splitVals,
     isLeaf: leaf,
     childPointers: [],
   }
   if (!leaf) {
     putChildPointers(obj, keys.length - 1);
     delete obj["value"];
-  } else {
-    delete obj["childPointers"];
-  }
-  return obj;
-}
-
-export let getRightSplit = <V>(
-    keys: Array<string | number>, values: indexMap<V>, leaf: boolean = true,
-  ): node<V> => {
-  let splitIndex = Math.floor(keys.length / 2);
-  let rightKeys = keys.slice(splitIndex, );
-  let rightVals = valueFilter<V>(rightKeys, values);
-  let obj = {
-    keys: rightKeys,
-    value: rightVals,
-    isLeaf: leaf,
-    childPointers: [],
-  }
-  if (!leaf) {
-    putChildPointers(obj, keys.length - 1);
-    delete obj["values"];
   } else {
     delete obj["childPointers"];
   }
@@ -118,8 +97,8 @@ export function rInsert<V>(
       child.childPointers![n] = left;
       child.childPointers![n + 1] = right;
     } else {
-      let leftNode = getLeftSplit<V>(child.keys, {}, false);
-      let rightNode = getRightSplit<V>(child.keys, {}, false);
+      let leftNode = getSplit<V>(child.keys, {}, "L", false,);
+      let rightNode = getSplit<V>(child.keys, {}, "R", false);
       let splitKey = rightNode.keys[0];
       rightNode.keys = rightNode.keys.slice(1, );
       return getSplitPayload(leftNode, rightNode, splitKey);
@@ -132,8 +111,8 @@ export function rInsert<V>(
     let n = getKey(this.key, child.keys);
     child.keys = getSplitConcat(this.key, child.keys, n);
     child.value![this.key] = this.value;
-    let leftNode = getLeftSplit(child.keys, child.value!);
-    let rightNode = getRightSplit(child.keys, child.value!);
+    let leftNode = getSplit(child.keys, child.value!, "L");
+    let rightNode = getSplit(child.keys, child.value!, "R");
     return getSplitPayload(leftNode, rightNode, rightNode.keys[0]);
   }
   return null;

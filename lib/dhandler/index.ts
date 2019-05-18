@@ -26,7 +26,6 @@ class tree <K, V> {
       return;
     }
     let res = util.rInsert.call({ key, value, maxLength: this.bfactor }, this.root);
-    console.log(res);
     if (res == null) {
       return;
     }
@@ -38,8 +37,8 @@ class tree <K, V> {
       this.root.childPointers![n + 1] = res.right;
       return;
     }
-    let leftNode = util.getLeftSplit<V>(this.root.keys, {}, false);
-    let rightNode = util.getRightSplit<V>(this.root.keys, {}, false);
+    let leftNode = util.getSplit<V>(this.root.keys, {}, "L", false);
+    let rightNode = util.getSplit<V>(this.root.keys, {}, "R", false);
     leftNode.value = {};
     rightNode.value = {};
     let splitKey = rightNode.keys[0];
