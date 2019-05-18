@@ -64,6 +64,7 @@ export let getLeftSplit = <V>(
     childPointers: [],
   }
   if (!leaf) {
+    putChildPointers(obj, keys.length - 1);
     delete obj["value"];
   } else {
     delete obj["childPointers"];
@@ -84,6 +85,7 @@ export let getRightSplit = <V>(
     childPointers: [],
   }
   if (!leaf) {
+    putChildPointers(obj, keys.length - 1);
     delete obj["values"];
   } else {
     delete obj["childPointers"];
