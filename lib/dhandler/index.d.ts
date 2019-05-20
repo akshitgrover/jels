@@ -6,6 +6,7 @@ interface indexMap<V> {
 interface leaf<V> {
   value?: indexMap<V>;
   keys: (string | number)[];
+  next?: node<V> | null;
 }
 
 /*

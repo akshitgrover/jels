@@ -5,8 +5,8 @@ import * as util from "./utils";
 /*
     Blueprint of B+ Trees
 */
-class tree <K, V> {
-  protected root: node<V>;
+class tree <V> {
+  root: node<V>;
 
   constructor (readonly bfactor: number = 4) {
     this.root = {
@@ -30,15 +30,23 @@ class tree <K, V> {
       return;
     }
     let n = util.getKey(res.key, this.root.keys);
-    this.root.keys = this.root.keys.slice(0, n)
-    .concat([res.key], this.root.keys.slice(n, ));
-    if (this.root.keys.length < this.bfactor) {
-      this.root.childPointers![n] = res.left;
-      this.root.childPointers![n + 1] = res.right;
+    this.root.keys = util.getSplitConcat(res.key, this.root.keys, n);
+    this.root.childPointers![n] = res.left;
+    this.root.childPointers = util.getSplitConcat(
+      res.right, this.root.childPointers!, n + 1,
+    );
+    if (n > 0 && res.left.isLeaf) {
+      this.root.childPointers[n - 1]!.next = res.left;
+    }
+    if (this.root.keys.length <= this.bfactor) {
       return;
     }
-    let leftNode = util.getSplit<V>(this.root.keys, {}, "L", false);
-    let rightNode = util.getSplit<V>(this.root.keys, {}, "R", false);
+    let leftNode = util.getSplit<V>(
+      this.root.keys, this.root.childPointers, {}, "L", false,
+    );
+    let rightNode = util.getSplit<V>(
+      this.root.keys, this.root.childPointers, {}, "R", false,
+    );
     leftNode.value = {};
     rightNode.value = {};
     let splitKey = rightNode.keys[0];
