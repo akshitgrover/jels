@@ -126,17 +126,18 @@ export function rInsert<V>(
 ): splitPayload<V> | null {
   let temp = getKey(this.key, n.keys);
   let child = n.childPointers![temp];
+  let returnPayload: splitPayload<V> | null = null;
   if (child == null) {
     n.childPointers![temp] = getNode(
       this.key, true, this.value, n.childPointers![temp + 1] || null,
     );
-    if (temp - 1 >= 0 && n.childPointers![temp - 1] != null) {
+    if (n.childPointers![temp - 1]) {
       n.childPointers![temp - 1]!.next = n.childPointers![temp];
     }
   } else if (!child.isLeaf) {
-    return _childIsNotLeaf.call(this, child);
+    returnPayload =  _childIsNotLeaf.call(this, child);
   } else if (child.isLeaf) {
-    return _childIsLeaf.call(this, child);
+    returnPayload =  _childIsLeaf.call(this, child);
   }
-  return null;
+  return returnPayload;
 }
