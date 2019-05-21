@@ -84,6 +84,43 @@ export let getSplitConcat = <T>(key: T, keys: Array<T>, n: number) => {
   return keys.slice(0, n).concat([key], keys.slice(n, ));
 }
 
+function _childIsNotLeaf<V>(child: node<V>) {
+  let res = rInsert.call(this, child);
+  if (res == null) {
+    return null;
+  }
+  let { key, left, right } = res;
+  let n_ = getKey(key, child.keys);
+  child.keys = getSplitConcat(this.key, child.keys, n_);
+  child.childPointers![n_] = left;
+  child.childPointers = getSplitConcat(right, child.childPointers!, n_ + 1);
+  if (n_ > 0 && left.isLeaf) {
+    child.childPointers[n_ - 1]!.next = left;
+  }
+  if (child.keys.length > this.maxLength) {
+    let leftNode = getSplit<V>(child.keys, child.childPointers!, {}, "L", false,);
+    let rightNode = getSplit<V>(child.keys, child.childPointers!, {}, "R", false);
+    let splitKey = rightNode.keys[0];
+    rightNode.keys = rightNode.keys.slice(1, );
+    return getSplitPayload(leftNode, rightNode, splitKey);
+  }
+  return null;
+}
+
+function _childIsLeaf<V>(child: node<V>) {
+  let n_ = getKey(this.key, child.keys);
+  child.keys = getSplitConcat(this.key, child.keys, n_);
+  child.value![this.key] = this.value;
+  if (child.keys.length > this.maxLength) {
+    let leftNode = getSplit(child.keys, [], child.value!, "L");
+    let rightNode = getSplit(child.keys, [], child.value!, "R");
+    rightNode.next = child.next;
+    leftNode.next = rightNode;
+    return getSplitPayload(leftNode, rightNode, rightNode.keys[0]);
+  }
+  return null;
+}
+
 export function rInsert<V>(
   this: insertPayload<V>, n: node<V>
 ): splitPayload<V> | null {
@@ -97,38 +134,9 @@ export function rInsert<V>(
       n.childPointers![temp - 1]!.next = n.childPointers![temp];
     }
   } else if (!child.isLeaf) {
-    let res = rInsert.call(this, child);
-    if (res == null) {
-      return null;
-    }
-    let { key, left, right } = res;
-    let n_ = getKey(key, child.keys);
-    child.keys = getSplitConcat(this.key, child.keys, n_);
-    child.childPointers![n_] = left;
-    child.childPointers = getSplitConcat(right, child.childPointers!, n_ + 1);
-    if (n_ > 0 && left.isLeaf) {
-      child.childPointers[n_ - 1]!.next = left;
-    }
-    if (child.keys.length > this.maxLength) {
-      let leftNode = getSplit<V>(child.keys, child.childPointers!, {}, "L", false,);
-      let rightNode = getSplit<V>(child.keys, child.childPointers!, {}, "R", false);
-      let splitKey = rightNode.keys[0];
-      rightNode.keys = rightNode.keys.slice(1, );
-      return getSplitPayload(leftNode, rightNode, splitKey);
-    }
-  } else if (child.isLeaf && child.keys.length < this.maxLength) {
-    let n_ = getKey(this.key, child.keys);
-    child.keys = getSplitConcat(this.key, child.keys, n_);
-    child.value![this.key] = this.value;
-  } else if (child.isLeaf && child.keys.length >= this.maxLength) {
-    let n_ = getKey(this.key, child.keys);
-    child.keys = getSplitConcat(this.key, child.keys, n_);
-    child.value![this.key] = this.value;
-    let leftNode = getSplit(child.keys, [], child.value!, "L");
-    let rightNode = getSplit(child.keys, [], child.value!, "R");
-    rightNode.next = child.next;
-    leftNode.next = rightNode;
-    return getSplitPayload(leftNode, rightNode, rightNode.keys[0]);
+    return _childIsNotLeaf.call(this, child);
+  } else if (child.isLeaf) {
+    return _childIsLeaf.call(this, child);
   }
   return null;
 }

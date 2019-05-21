@@ -47,8 +47,6 @@ class tree <V> {
     let rightNode = util.getSplit<V>(
       this.root.keys, this.root.childPointers, {}, "R", false,
     );
-    leftNode.value = {};
-    rightNode.value = {};
     let splitKey = rightNode.keys[0];
     rightNode.keys = rightNode.keys.slice(1, );
     this.root = {
