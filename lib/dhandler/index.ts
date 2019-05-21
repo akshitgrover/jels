@@ -25,34 +25,14 @@ class tree <V> {
       );
       return;
     }
-    let res = util.rInsert.call({ key, value, maxLength: this.bfactor }, this.root);
-    if (res == null) {
-      return;
+    let res = util.childIsNotLeaf.call({ key, value, maxLength: this.bfactor }, this.root);
+    if (res != null) {
+      this.root = {
+        keys: [res.key],
+        childPointers: [res.left, res.right],
+        isLeaf: false,
+      }
     }
-    let n = util.getKey(res.key, this.root.keys);
-    this.root.keys = util.getSplitConcat(res.key, this.root.keys, n);
-    this.root.childPointers![n] = res.left;
-    this.root.childPointers = util.getSplitConcat(
-      res.right, this.root.childPointers!, n + 1,
-    );
-    if (n > 0 && res.left.isLeaf) {
-      this.root.childPointers[n - 1]!.next = res.left;
-    }
-    if (this.root.keys.length <= this.bfactor) {
-      return;
-    }
-    let leftNode = util.getSplit<V>(
-      this.root.keys, this.root.childPointers, {}, "L", false,
-    );
-    let rightNode = util.getSplit<V>(
-      this.root.keys, this.root.childPointers, {}, "R", false,
-    );
-    let splitKey = rightNode.keys[0];
-    rightNode.keys = rightNode.keys.slice(1, );
-    this.root = {
-      keys: [splitKey],
-      childPointers: [leftNode, rightNode],
-      isLeaf: false,
-    }
+    return;
   };
 }
