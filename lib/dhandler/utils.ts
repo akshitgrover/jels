@@ -84,14 +84,14 @@ export let getSplitConcat = <T>(key: T, keys: Array<T>, n: number) => {
   return keys.slice(0, n).concat([key], keys.slice(n, ));
 }
 
-function _childIsNotLeaf<V>(child: node<V>) {
+export function childIsNotLeaf<V>(child: node<V>) {
   let res = rInsert.call(this, child);
   if (res == null) {
     return null;
   }
   let { key, left, right } = res;
   let n_ = getKey(key, child.keys);
-  child.keys = getSplitConcat(this.key, child.keys, n_);
+  child.keys = getSplitConcat(res.key, child.keys, n_);
   child.childPointers![n_] = left;
   child.childPointers = getSplitConcat(right, child.childPointers!, n_ + 1);
   if (n_ > 0 && left.isLeaf) {
@@ -135,7 +135,7 @@ export function rInsert<V>(
       n.childPointers![temp - 1]!.next = n.childPointers![temp];
     }
   } else if (!child.isLeaf) {
-    returnPayload =  _childIsNotLeaf.call(this, child);
+    returnPayload =  childIsNotLeaf.call(this, child);
   } else if (child.isLeaf) {
     returnPayload =  _childIsLeaf.call(this, child);
   }
