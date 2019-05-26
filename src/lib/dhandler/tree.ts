@@ -5,7 +5,7 @@ import * as util from "./utils";
 /*
     Blueprint of B+ Trees
 */
-class tree <V> {
+export default class Tree <V> {
   root: node<V>;
 
   constructor (readonly bfactor: number = 4) {

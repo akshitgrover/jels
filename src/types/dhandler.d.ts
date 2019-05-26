@@ -40,10 +40,11 @@ interface splitPayload<V> {
 /*
     Blueprint of B+ Trees
 */
-declare class tree <V> {
+declare class Tree <V> {
   protected root: node<V>;
   readonly bfactor: number;
 
+  constructor(a: number);
   private _traverse(queue: node<V>[]): string;
   private _traverseLinkedList(node: node<V>): string;
   insert: (key: string | number, value: V) => void;
