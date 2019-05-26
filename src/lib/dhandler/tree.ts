@@ -1,5 +1,3 @@
-
-
 import * as util from "./utils";
 
 /*
@@ -77,5 +75,4 @@ export default class Tree <V> {
   traverseLinkedList(): string {
     return this._traverseLinkedList(this.root);
   }
-
 }
