@@ -35,4 +35,22 @@ class tree <V> {
     }
     return;
   };
+
+  private _traverse(queue: node<V>[]): string {
+    let str: string = "";
+    while(queue.length != 0) {
+      str += queue[0].keys.toString() + " | ";
+      let cp = queue[0].childPointers || [];
+      cp.forEach((c) => {
+        if (c) queue.push(c);
+      });
+      queue = queue.slice(1, );
+    }
+    return str;
+  }
+
+  traverse(): string {
+    let queue = [this.root];
+    return this._traverse(queue);
+  }
 }
