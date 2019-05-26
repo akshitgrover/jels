@@ -1,4 +1,4 @@
-///<reference path="./index.d.ts"/>
+
 
 import * as util from "./utils";
 

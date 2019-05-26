@@ -2,11 +2,11 @@
     "compilerOptions": {
         "module": "CommonJs",
         "moduleResolution": "Node",
-        "target": "ES5",
+        "target": "ES6",
         "outDir": "build",
         "strictNullChecks": true
     },
     "include": [
-        "lib/**/*"
+        "src/**/*"
     ]
 }
