@@ -45,6 +45,8 @@ declare class tree <V> {
   readonly bfactor: number;
 
   private _traverse(queue: node<V>[]): string;
+  private _traverseLinkedList(node: node<V>): string;
   insert: (key: string | number, value: V) => void;
   traverse: (queue: node<V>[]) => string;
+  traverseLinkedList(): string;
 }

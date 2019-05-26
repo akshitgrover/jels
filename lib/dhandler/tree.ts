@@ -49,8 +49,33 @@ class tree <V> {
     return str;
   }
 
+  private _traverseLinkedList(node: node<V>): string {
+    let cp;
+    if (!node.childPointers) {
+      let str = "";
+      let n: node<V> | null = node;
+      while(n != null) {
+        str += n.keys.toString() + " | ";
+        n = n.next!;
+      }
+      return str;
+    }
+    for (let i = 0; i <  node.childPointers!.length; i++) {
+      if (node.childPointers![i] != null) {
+        cp = node.childPointers![i];
+        break;
+      }
+    }
+    return this._traverseLinkedList(cp);
+  }
+
   traverse(): string {
     let queue = [this.root];
     return this._traverse(queue);
   }
+
+  traverseLinkedList(): string {
+    return this._traverseLinkedList(this.root);
+  }
+
 }
